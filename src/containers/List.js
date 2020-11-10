@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import withDataFetching from '../withDataFetching';
 import SubHeader from '../components/Header/SubHeader';
 import ListItem from '../components/ListItem/ListItem';
 
@@ -16,15 +15,17 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const List = ({ data, loading, error, match, history }) => {
-  const items =
-    data && data.filter(item => item.listId === parseInt(match.params.id));
+const List = ({ lists, listItems, loading = false, error = false, match, history }) => {
+  const items = listItems && listItems.filter(item => item.listId === parseInt(match.params.id));
+  
+  const list = lists && lists.find(list => list.id === parseInt(match.params.id));
 
   return !loading && !error ? (
     <>
-      {history && (
+      {history && lists && (
         <SubHeader
           goBack={() => history.goBack()}
+          title={list.title}
           openForm={() => history.push(`${match.url}/new`)}
         />
       )}
@@ -37,7 +38,4 @@ const List = ({ data, loading, error, match, history }) => {
   );
 };
 
-export default withDataFetching({
-  dataSource:
-    'https://my-json-server.typicode.com/pranayfpackt/-React-Projects/items',
-})(List);
+export default List;
