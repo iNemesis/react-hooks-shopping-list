@@ -5,8 +5,7 @@ import Header from '../components/Header/Header';
 import Lists from './Lists';
 import List from './List';
 import Form from './Form';
-import ListsContextProvider, { ListsContext } from '../contexts/ListsContextProvider';
-import ItemsContextProvider, { ItemsContext } from '../contexts/ItemsContextProvider';
+import GlobalContext from "../contexts/GlobalContext";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -29,23 +28,13 @@ const App = () => (
     <GlobalStyle />
     <AppWrapper>
       <Header />
-      <ListsContextProvider>
-        <ItemsContextProvider>
-          <ListsContext.Consumer>
-            {({ lists, loading: listsLoading, error: listsError, getListsRequest }) => (
-              <ItemsContext.Consumer>
-                {({items}) => (
-                  <Switch>
-                    <Route exact path='/' render={props => lists && <Lists lists={lists} loading={listsLoading} error={listsError} getListsRequest={getListsRequest} {...props} />} />
-                    <Route path='/list/:id/new' component={Form} />
-                    <Route path='/list/:id' render={props => lists && items && <List lists={lists} listItems={items} {...props} />} />
-                  </Switch>
-                )}
-              </ItemsContext.Consumer>
-            )}
-          </ListsContext.Consumer>
-        </ItemsContextProvider>
-      </ListsContextProvider>
+      <GlobalContext>
+          <Switch>
+            <Route exact path='/' component={Lists} />
+            <Route path='/list/:id/new' component={Form} />
+            <Route path='/list/:id' component={List} />
+          </Switch>
+      </GlobalContext>
     </AppWrapper>
   </>
 );

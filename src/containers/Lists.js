@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import SubHeader from '../components/Header/SubHeader';
+import {ListsContext} from "../contexts/ListsContextProvider";
 
 const ListWrapper = styled.div`
   display: flex;
@@ -32,7 +33,8 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const Lists = ({ lists, loading, error, getListsRequest, match, history }) => {
+const Lists = ({ match, history }) => {
+    const { lists, loading, error, getListsRequest } = React.useContext(ListsContext);
     React.useEffect(() => {
         if (!lists.length) {
             getListsRequest();

@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import SubHeader from '../components/Header/SubHeader';
 import ListItem from '../components/ListItem/ListItem';
+import {ListsContext} from "../contexts/ListsContextProvider";
+import {ItemsContext} from "../contexts/ItemsContextProvider";
 
 const ListItemWrapper = styled.div`
   display: flex;
@@ -15,14 +17,23 @@ const Alert = styled.span`
   text-align: center;
 `;
 
-const List = ({ lists, listItems, loading = false, error = false, match, history }) => {
-  const items = listItems && listItems.filter(item => item.listId === parseInt(match.params.id));
-  
-  const list = lists && lists.find(list => list.id === parseInt(match.params.id));
+const List = ({ match, history }) => {
+    const { list, getListRequest } = React.useContext(ListsContext);
+    const { loading, error, items, getItemsRequest } = React.useContext(ItemsContext);
+
+  React.useEffect(() => {
+      if (!list.id) {
+          getListRequest(match.params.id);
+      }
+
+      if (!items.length > 0) {
+          getItemsRequest(match.params.id);
+      };
+  }, [items, list, match.params.id, getItemsRequest, getListRequest]);
 
   return !loading && !error ? (
     <>
-      {history && lists && (
+      {history && list && (
         <SubHeader
           goBack={() => history.goBack()}
           title={list.title}
